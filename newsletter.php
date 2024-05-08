@@ -1,3 +1,4 @@
+
 <?php
 $servername = "localhost";
 $username = "root";
@@ -13,25 +14,34 @@ if ($conn->connect_error) {
 }
 
 // Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $Email = $_POST["Email"];
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if 'Email' field is set in the POST array
+    if(isset($_POST["Email"])) {
+        // Retrieve form data
+        $Email = $_POST["Email"];
 
-    // Prepare and execute database insertion for newsletter subscription
-    $sql = "INSERT INTO `newsletter`(`Email`) VALUES ('$Email')";
+        // Debugging: Output form data for verification
+        echo "Email: " . $Email . "<br>";
 
-    if ($conn->query($sql) === TRUE) {
-        echo "Newsletter subscription successful!";
+        // Prepare and execute database insertion
+        $sql = "INSERT INTO `newsletter` (`Email`) VALUES ('$Email')";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "Newsletter sent!";
+        } else {
+            // Error handling: Output SQL query and error message
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
     } else {
-        // Error handling: Output SQL query and error message
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        // Output error message if 'Email' field is not set
+        echo "Email field is not set in the form.";
     }
 } else {
     // Debugging: Output message if form submission method is not POST
-    echo "Form submission method is not POST.";
+    echo "Newsletter submitted.";
 }
+
 
 // Close connection
 $conn->close();
-?>
-<script>alert('Email for Newsletter has been recorded!!')</script>
+?> 
